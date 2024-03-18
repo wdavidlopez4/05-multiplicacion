@@ -3,7 +3,11 @@ import fs from 'fs'
 
 describe('domain/case-uses/save-file', () => {
     afterEach(() => {
-        fs.rmSync('outputs', { recursive: true });
+        const existCarpeta = fs.existsSync('outputs');
+        if(existCarpeta){
+            fs.rmSync('outputs', { recursive: true });
+        }
+        
     });
 
     test('guardar archivo con valores por defecto', () => {
@@ -12,6 +16,24 @@ describe('domain/case-uses/save-file', () => {
         const options = {
             fileContent: 'este es un contenido de prueba'
         };
+
+        const result = saveFile.execute(options);
+        const fileExiste = fs.existsSync(filePath);
+        const fileContent = fs.readFileSync(filePath, {encoding: 'utf8'});
+
+        expect(result).toBe(true);
+        expect(fileExiste).toBe(true);
+        expect(fileContent).toBe(options.fileContent);
+    });
+
+    test('guardar archivo con valore propios', () => {
+        const saveFile = new SaveFile();
+        const options = {
+            fileContent: 'este es un contenido de prueba',
+            fileDestination:'outputs',
+            fileName: 'table'
+        };
+        const filePath = `${options.fileDestination}/${options.fileName}.txt`
 
         const result = saveFile.execute(options);
         const fileExiste = fs.existsSync(filePath);
