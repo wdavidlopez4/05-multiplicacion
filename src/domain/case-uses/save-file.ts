@@ -22,7 +22,7 @@ export class SaveFile implements ISaveFile{
             return true;
 
         } catch (error) {
-            console.log(error);
+            //console.log(error); //winston para hacer log
             return false;
         }
     }

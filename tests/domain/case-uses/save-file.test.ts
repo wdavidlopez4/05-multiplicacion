@@ -42,5 +42,38 @@ describe('domain/case-uses/save-file', () => {
         expect(result).toBe(true);
         expect(fileExiste).toBe(true);
         expect(fileContent).toBe(options.fileContent);
-    })
+    });
+
+    test('cuando no se crea el directorio', () =>{
+        const saveFile = new SaveFile();
+        const options = {
+            fileContent: 'este es un contenido de prueba',
+            fileDestination:'outputs',
+            fileName: 'table'
+        };
+
+        const mkdirSpy = jest.spyOn(fs, 'mkdirSync')
+                             .mockImplementation(() => { throw new Error('error al crear archivo'); });
+        
+        const result = saveFile.execute(options);
+        expect(result).toBe(false);
+
+        //resetear el mock por que si no, se ejecuta en los siquientes test
+        mkdirSpy.mockRestore();
+    });
+
+    test('cuando no falle y no se escriba en el archivo', () =>{
+        const saveFile = new SaveFile();
+        const options = {
+            fileContent: 'este es un contenido de prueba',
+        };
+
+        const mkdirSpy = jest.spyOn(fs, 'writeFileSync')
+                             .mockImplementation(() => { throw new Error('error al escribir'); });
+
+        const result = saveFile.execute(options);
+        expect(result).toBe(false);
+
+        mkdirSpy.mockRestore();
+    });
 })
