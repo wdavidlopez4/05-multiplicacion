@@ -27,6 +27,6 @@ export class ServerApp{
 
         (wasCreated)
             ? console.log('archivo creado')
-            : console.log('no creado');
+            : console.error('no creado');
     }
 }

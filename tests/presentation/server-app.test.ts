@@ -45,4 +45,30 @@ describe('presentation/server-app', () =>{
         });
 
     });
+
+    test('probando el funcionamiento con valores mock', () => {
+
+        //estos metodos fn() son iguales que los spyOn
+        const logMock = jest.fn();
+        const logErrorMock = jest.fn();
+        const createMock = jest.fn().mockReturnValue('1 x 2 = 2');
+        const saveFileMock = jest.fn().mockReturnValue(true);
+
+        //reemplazamos las funciones que utilizamos para hacer mock
+        console.log = logMock;
+        console.error = logErrorMock;
+        CreateTable.prototype.execute = createMock;
+        SaveFile.prototype.execute = saveFileMock;
+
+        ServerApp.run(options);
+
+        expect(logMock).toHaveBeenCalledWith('server runnig...');
+        expect(createMock).toHaveBeenCalledWith({"base": options.base, "limit": options.limit})
+        expect(saveFileMock).toHaveBeenCalledWith({
+            "fileContent": "1 x 2 = 2", 
+            "fileDestination": "outputs", 
+            "fileName": "test-fileName"});
+        
+        expect(logErrorMock).toHaveBeenCalledTimes(0);
+    });
 })
